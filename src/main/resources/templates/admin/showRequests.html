@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/index.css"/>
+</head>
+
+<body class="container">
+
+<h1>This is list of all requests of restaurants!!</h1>
+<div class="table-container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Type</th>
+            <th scope="col">User</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="restaurant:${restaurants}">
+            <th scope="row" th:text="${restaurant.getRestaurantId()}"></th>
+            <th scope="row" th:text="${restaurant.name}"></th>
+            <th scope="row" th:text="${restaurant.address}"></th>
+            <th scope="row" th:text="${restaurant.type}"></th>
+            <th scope="row" th:text="${restaurant.userId}"></th>
+            <th>
+                <div class="action">
+                    <button th:data-id="${restaurant.userId}"
+                            onclick="approveRequest(this.getAttribute('data-id')); setTimeout(window.location.reload.bind(location), 500);">
+                        Approve
+                    </button>
+                </div>
+            </th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <a th:href="@{/logout}">Logout</a>
+</div>
+</body>
+
+<script>
+    function approveRequest(id) {
+        fetch("/admin/approveRequest/" + id).then(res => console.log(res));
+    }
+</script>
+</html>

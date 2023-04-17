@@ -1,0 +1,86 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="eng">
+<head>
+    <title>Home Page</title>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body class="container">
+
+<div>
+
+    <div class="search-container">
+        <form th:action="@{/logout}" method="GET" id="logoutform">
+            <button type="submit" class="btn btn-primary" id="logoutbtn">Logout</button>
+        </form>
+    </div>
+
+    <div class="search-container">
+        <form th:action="@{/search-result/}" method="POST" id="searchform">
+            <input type="text" id="search" name="keyword" placeholder="Search products">
+            <button type="submit" class="btn btn-primary" id="searchbtn">Search</button>
+        </form>
+    </div>
+
+    <div class="search-container">
+        <form th:action="@{/filter-food/}" method="POST" id="filterform">
+            <select name="keyword" id="filter" placeholder="Select type">
+                <option value="">Select Dish Type</option>
+                <option value="Veg">Veg</option>
+                <option value="Nonveg">Nonveg</option>
+            </select>
+
+            <select name="min" id="filterMin" placeholder="Min">
+                <option value="">Select Minimum</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+
+            <select name="max" id="filterMax" placeholder="Max">
+                <option value="">Select Maximum</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+</div>
+
+<div>
+    <div class="search-container">
+        <form th:action="@{/showcart/}" method="GET" id="showCart">
+            <button type="submit" class="btn btn-primary" id="cartButton">Show Cart</button>
+        </form>
+    </div>
+</div>
+
+
+<div class="dishes">
+    <div class="dish-card" th:each="dishes:${dishes}">
+        <img src="/img/food.jpeg"/>
+        <div class="dish-info">
+            <div>
+                <h3 th:text="${dishes.dishName}"/>
+                <span th:utext="${'&#36;'+'&nbsp;'}"></span><span th:text="${dishes.dishPrice}"></span>
+            </div>
+            <div th:text="${dishes.dishType}"/>
+        </div>
+        <div class="action">
+            <button th:data-id="${dishes.dishId}" th:data-dish="${dishes.dishName}"
+                    onclick="addToCart(this.getAttribute('data-id'),this.getAttribute('data-dish'))">Add to cart
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function addToCart(id, name) {
+        fetch("/cart/add/" + id).then(res => console.log(res));
+        alert(name + " added to the cart");
+    }
+</script>
+</body>
+</html>
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart List</title>
+    <link rel="stylesheet" href="/index.css">
+
+</head>
+<body class="container">
+<div class="table-container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Type</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartList:${cartList}">
+            <th scope="row" th:text="${cartList.dishId}"></th>
+            <th scope="row" th:text="${cartList.dishName}"></th>
+            <th scope="row" th:text="${cartList.dishPrice}"></th>
+            <th scope="row" th:text="${cartList.dishType}"></th>
+
+            <th scope="row">
+                <input type="text" name="keyword" value="1" th:data-id="${cartList.dishId}"
+                       th:data-price="${cartList.dishPrice}"
+                       onchange="totalAmountPerItem(this.getAttribute('data-price'),event.target.value, this.getAttribute('data-id'));">
+            </th>
+            <th scope="row" class="price">
+                <input th:data-price-id="${cartList.dishId}" type="text" th:value="${cartList.dishPrice}">
+            </th>
+            <th>
+                <div class="action">
+                    <button th:data-id="${cartList.dishId}"
+                            onclick="deleteFromCart(this.getAttribute('data-id')); window.location.reload(true);">Delete
+                    </button>
+                </div>
+            </th>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div class="col-lg-4 mt-2">
+    <div class="row d-flex justify-content-between px-4">
+        <p class="mb-1 text-left">Subtotal : <span id="sub-total"></span></p>
+    </div>
+    <div class="row d-flex justify-content-between px-4">
+        <p class="mb-1 text-left">Shipping : $20
+        <div><span id="shipping"></span></div>
+        </p>
+    </div>
+    <div class="row d-flex justify-content-between px-4" id="tax">
+        <p class="mb-1 text-left">Total (tax included): <span id="grand-total"></span></p>
+    </div>
+</div>
+
+<div class="search-container">
+    <form th:action="@{/payment/}" method="GET" id="paymentform">
+        <button type="submit" class="btn btn-primary" onclick="placeOrder();" id="paymentbtn">Proceed to Payment
+        </button>
+    </form>
+</div>
+
+<div>
+    <input type="text" th:text="${message}" id="search" name="keyword">
+</div>
+
+<script>
+
+    function totalAmountPerItem(price, quantity, id) {
+        result = quantity * price;
+        document.querySelector("[data-price-id='" + id + "']").value = result;
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        const subTotal = document.querySelector("#sub-total");
+        const grandTotal = document.querySelector("#grand-total");
+        const AllPriceInputs = document.querySelectorAll(".price");
+        let total = 0;
+        for (let i = 0; i < AllPriceInputs.length; i++) {
+            const priceInputValue = Number(AllPriceInputs[i].children[0].value);
+            total += priceInputValue;
+        }
+        subTotal.innerHTML = "$" + total
+        grandTotal.innerHTML = "$" + Number(total + 20)
+    }
+
+    calculateTotal();
+
+    function placeOrder() {
+        const totalVal = document.querySelector("#grand-total").innerHTML;
+        const total = Number(totalVal.split("$")[1]);
+        localStorage.setItem("total", total);
+    }
+
+    function deleteFromCart(id) {
+        fetch("/cart/remove/" + id).then(res => console.log(res));
+    }
+
+
+</script>
+</body>
+</html>
