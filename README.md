@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-### **Descripton:**
+### **Description:**
 
 This is an online food ordering application built using Java, Spring Boot, and MySQL. The application allows users to browse through a variety of food items, place orders, and make payments online. It includes features like user authentication, cart management, order history, and online payments.
 
